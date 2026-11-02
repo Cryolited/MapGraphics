@@ -23,15 +23,24 @@ public:
 
     qreal thickness() const;
     void setThickness(qreal nThick);
-    void updateObjectData(QString country, int value, int max, int min);
-    
+    void setColor(QColor fillColor);
+    void setLen(double);
+
+    MapGraphicsObject* ref;
+    double angShift = 0;
+    uint8_t* _zoom;
 signals:
     
 public slots:
-    void setEndPointA(const Position& pos);
+    //void rotationChanged(const Position& pos);
+    //void rotationChanged();
+    void setEndPointA();
+    void setShiftPoint(void);
+    void setShiftPoint2(int len);
     void setEndPointB(const Position& pos);
     void setEndPoints(const Position& a,
                       const Position& b);
+    void zoomChanged(quint8 nZoom);
 
 private slots:
     void updatePositionFromEndPoints();
@@ -40,7 +49,9 @@ private:
     Position _a;
     Position _b;
     qreal _thickness;
-    
+    QColor _fillColor;
+    double _len;
+
 };
 
 #endif // LINEOBJECT_H

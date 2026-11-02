@@ -19,12 +19,14 @@ public:
 
     qreal radius() const;
     void setRadius(qreal radius);
+    void setShift(double shift);
 
-    void updateObjectData(QString country, int value, int max, int min);
+    MapGraphicsObject* ref;
     
 signals:
     
 public slots:
+    void setPosCircle(void);
 
 protected:
     //virtual from MapGraphicsObject
@@ -33,6 +35,7 @@ protected:
 private:
     qreal _radius;
     QColor _fillColor;
+    double _shift;
     
 };
 

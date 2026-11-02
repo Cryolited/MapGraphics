@@ -2,15 +2,18 @@
 
 #include <QtDebug>
 #include <QKeyEvent>
+#include <QtMath>
+
+#include "fpocommon/h/fpo/fpo_common/alsr_lafi.h"
 
 CircleObject::CircleObject(qreal radius,bool sizeIsZoomInvariant, QColor fillColor, MapGraphicsObject *parent) :
     MapGraphicsObject(sizeIsZoomInvariant,parent), _fillColor(fillColor)
 {
     _radius = qMax<qreal>(radius,0.01);
 
-    this->setFlag(MapGraphicsObject::ObjectIsSelectable, false);
-    this->setFlag(MapGraphicsObject::ObjectIsMovable, false);
-    this->setFlag(MapGraphicsObject::ObjectIsFocusable, false);
+    this->setFlag(MapGraphicsObject::ObjectIsSelectable);
+    this->setFlag(MapGraphicsObject::ObjectIsMovable);
+    this->setFlag(MapGraphicsObject::ObjectIsFocusable);
 }
 
 CircleObject::~CircleObject()
@@ -29,13 +32,11 @@ void CircleObject::paint(QPainter *painter, const QStyleOptionGraphicsItem *opti
 {
     Q_UNUSED(option)
     Q_UNUSED(widget)
-
     painter->setRenderHint(QPainter::Antialiasing,true);
     painter->setBrush(_fillColor);
     painter->drawEllipse(QPointF(0,0),
                          _radius,
                          _radius);
-
 }
 
 qreal CircleObject::radius() const
@@ -49,16 +50,28 @@ void CircleObject::setRadius(qreal radius)
     this->redrawRequested();
 }
 
-
-void CircleObject::updateObjectData(QString country, int value, int max, int min)
+void CircleObject::setShift(double shift)
 {
-    return;
+    _shift = shift;
+}
+
+void CircleObject::setPosCircle(void)
+{
+    LAFI_DOUBLE lafid;
+    LafiD(0, _shift, 0, qDegreesToRadians(ref->rotation()), qDegreesToRadians(ref->latitude()), qDegreesToRadians(ref->longitude()), &lafid);
+
+    this->setPos(QPointF(qRadiansToDegrees(lafid.la), qRadiansToDegrees(lafid.fi)));
 }
 
 //protected
 //virtual from MapGraphicsObject
 void CircleObject::keyReleaseEvent(QKeyEvent *event)
 {
-
-   event->ignore();
+    if (event->matches(QKeySequence::Delete))
+    {
+        this->deleteLater();
+        event->accept();
+    }
+    else
+        event->ignore();
 }
