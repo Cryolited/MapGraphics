@@ -30,9 +30,9 @@ public:
      дальности, при крутом луче, накрывающем надир, - пятно вокруг самолёта.
 
      Ось луча:
-       - азимут = курс + azimuthFromNose (по часовой от носа: 0 - нос,
-         90 - правый траверз, 270 - ЛЕВЫЙ траверз - по умолчанию);
-         курс = ref->rotation(), как у SectorObject;
+       - азимут = ref->rotation() + azimuthFromNose (по часовой, град);
+         в этом проекте rotation() + 0 - ЛЕВЫЙ траверз (по умолчанию 0),
+         180 - правый траверз;
        - угол места оси = bank + tilt (как в коде трёх линий:
          ang = -tan(bank + tilt), дальность = (heig - altSurf)/ang),
          т.е. ОТРИЦАТЕЛЬНАЯ сумма - луч смотрит ВНИЗ. Для траверзного
@@ -63,7 +63,7 @@ public:
 
      \param verticalWidthDeg полная ширина ДН по вертикали (по углу места), град
      \param horizontalWidthDeg полная ширина ДН по горизонтали (по азимуту), град
-     \param azimuthFromNoseDeg азимут оси от носа по часовой, град (270 - левый траверз)
+     \param azimuthFromNoseDeg добавка к ref->rotation() по часовой, град (0 - левый траверз)
      \param sizeIsZoomInvariant должно быть false (размеры пятна в метрах)
      \param fillColor цвет заливки пятна; ядро - тот же цвет плотнее
      \param borderColor цвет кромки пятна; QColor() - цвет заливки,
@@ -73,7 +73,7 @@ public:
     */
     explicit BeamObject(qreal verticalWidthDeg = 6.2,
                         qreal horizontalWidthDeg = 3.0,
-                        qreal azimuthFromNoseDeg = 270.0,
+                        qreal azimuthFromNoseDeg = 0.0,
                         bool sizeIsZoomInvariant = false,
                         QColor fillColor = QColor(0,90,255,45),
                         QColor borderColor = QColor(),
@@ -102,7 +102,7 @@ public:
     void setHorizontalWidthRad(qreal widthRad);
 
     //---- направление оси ----
-    //азимут оси от носа по часовой (0 - нос, 90 - правый, 270 - левый траверз)
+    //добавка к ref->rotation() по часовой, град (0 - левый траверз, 180 - правый)
     qreal azimuthFromNoseDeg() const;
     void setAzimuthFromNoseDeg(qreal angleDeg);
     void setAzimuthFromNoseRad(qreal angleRad);

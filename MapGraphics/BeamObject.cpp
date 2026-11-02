@@ -646,14 +646,15 @@ bool BeamObject::groundRange(qreal e, qreal n, qreal u, qreal &rangeM, qreal &az
     return true;
 }
 
-//точка на азимуте azDeg и дальности rangeM от самолёта, метры ENU
+//точка на азимуте azDeg и дальности rangeM (МЕТРЫ) от самолёта, метры ENU.
+//ВНИМАНИЕ: LafiD принимает дальность в КИЛОМЕТРАХ
 QPointF BeamObject::groundPoint(qreal azDeg, qreal rangeM) const
 {
     if (rangeM < 0.01)
         return QPointF(0.0,0.0);
 
     LAFI_DOUBLE lafid;
-    LafiD(0,rangeM,0,
+    LafiD(0,rangeM/1000.0,0,
           qDegreesToRadians(normalizedBearing(azDeg)),
           qDegreesToRadians(_refPos.latitude()),
           qDegreesToRadians(_refPos.longitude()),
